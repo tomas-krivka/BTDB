@@ -2,6 +2,100 @@
 
 ## [unreleased]
 
+## 28.3.2
+
+### Fixed
+
+Previous fix was incomplete.
+
+## 28.3.1
+
+### Fixed
+
+Kvi in Native Heap KVDB must be created in Exclusive mode.
+
+## 28.3.0
+
+### Added
+
+Upgrade from IDictionary<K1,T1> to Dictionary<K2,T2> is possible and tested in Relations.
+
+## 28.2.0
+
+### Added
+
+Enum Constraints.
+
+Generic `Constraint<T>.Any` (not really generic just supporting all currently available constraints (bool, string, DateTime, (un)signed, Enum))
+
+## 28.1.2
+
+### Fixed
+
+ScanBy and GatherBy secondary index when DB is upgraded with secondary index removed.
+
+## 28.1.1
+
+### Fixed
+
+Enums with multiple synonym labels for the same value (for example HttpStatusCode 300) can be stored
+
+## 28.1.0
+
+### Fixed
+
+Loose Constraint on first position didn't found all matched records.
+
+### Added
+
+Relations `UpdateById` method for faster updates.
+
+## 28.0.0
+
+### Added
+
+UpTo Constraints, which quickly skip rest of values.
+
+## 27.0.3
+
+### Fixed
+
+ScanBy of empty relation does not throw Exception anymore.
+
+## 27.0.2
+
+### Fixed
+
+Hopefully last bug in native heap fixed.
+
+## 27.0.1
+
+## 27.0.0
+
+### Breaking Change
+
+Added support for .Net 6.0. Removed support for .Net 5.0.
+
+## 26.14.0
+
+### Added
+
+Constraints and ScanById relation method.
+
+### Changed
+
+Enum compatibility is now always like it was with BinaryCompatibilityOnlyAttribute. Please remove all usages of this attribute from client code as it does not have any meaning.
+
+## 26.13.0
+
+DefaultTypeConvertorGenerator now supports `T` to `T?` conversion. Also `U` to `T?` if `U` is convertible to `T`.
+
+## 26.12.1
+
+Fixed native heap implementation.
+
+## 26.12.0
+
 ## 26.11.0
 
 ### Added

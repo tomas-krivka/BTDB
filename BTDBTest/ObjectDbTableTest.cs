@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using BTDB.Buffer;
 using BTDB.Encrypted;
@@ -2655,7 +2656,6 @@ namespace BTDBTest
                 table.FindByIdGlobal(groupId));
         }
 
-        [BinaryCompatibilityOnly]
         [Flags]
         public enum BatchType
         {
@@ -2997,6 +2997,47 @@ namespace BTDBTest
             var table = tr.GetRelation<IPersonWoConstructorTable>();
             table.Upsert(new(1) { Name = "Boris" });
             Assert.Equal("Boris", table.First().Name);
+        }
+
+        public class RowWithOrderedSet
+        {
+            [PrimaryKey(1)] public ulong TenantId { get; set; }
+
+            // DON'T DO THIS IN YOUR CODE !!! Either use IList<T>, List<T> for inline storage or IOrderedSet<T> for externaly stored T
+            public OrderedSet<int> Ordered { get; set; }
+        }
+
+        public interface IRowWithOrderedSetTable : IRelation<RowWithOrderedSet>
+        {
+        }
+
+        [Fact]
+        public void RowWithOrderedSetWorksButYouShouldUseIOrderedSetInstead()
+        {
+            using var tr = _db.StartTransaction();
+            var table = tr.GetRelation<IRowWithOrderedSetTable>();
+            table.Upsert(new() { TenantId = 1, Ordered = new() { 3, 5, 4 } });
+            Assert.Equal(new[] { 3, 5, 4 }, table.First().Ordered);
+        }
+
+        public class UrlWithStatus
+        {
+            [PrimaryKey(1)] public string Url { get; set; }
+            public HttpStatusCode StatusCode { get; set; }
+        }
+
+        public interface IUrlWithStatusTable : IRelation<UrlWithStatus>
+        {
+        }
+
+        [Fact]
+        public void StatusCodeAmbiguousEnumCanBeStored()
+        {
+            using var tr = _db.StartTransaction();
+            var table = tr.GetRelation<IUrlWithStatusTable>();
+            table.Upsert(new() { Url = "home.com", StatusCode = HttpStatusCode.MultipleChoices });
+            Assert.Equal(HttpStatusCode.MultipleChoices, table.First().StatusCode);
+            Assert.Equal(HttpStatusCode.Ambiguous, table.First().StatusCode); //also 300
         }
     }
 }
